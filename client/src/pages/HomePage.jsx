@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Grow, Grid, Paper, AppBar, TextField, Button, Chip } from '@mui/material';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Form from '../components/Form';
 import Posts from '../components/Posts/Posts';
@@ -47,7 +47,7 @@ const HomePage = () => {
 
   return (
     <Grow in>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{marginBottom:'15px'}}>
         <Grid
           sx={{
             flexDirection: {
@@ -112,7 +112,7 @@ const HomePage = () => {
                 sx={{
                   borderRadius: 4,
                   marginTop: '1rem',
-                  padding: '16px',
+                  padding: '16px 10px',
                 }}
                 elevation={6}
               >

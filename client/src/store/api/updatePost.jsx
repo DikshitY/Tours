@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../Axios';
+import toast from 'react-hot-toast'
 
 const updatePost = createAsyncThunk(
   'post/update',
@@ -9,7 +10,9 @@ const updatePost = createAsyncThunk(
         `/api/v1/posts/${currentID}`,
         formData
       );
-      console.log(response.data);
+
+      toast.success('Post updated successfully.')
+
       return response.data;
     } catch (error) {
       console.log(error.message);

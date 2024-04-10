@@ -14,15 +14,13 @@ const Paginate = ({page}) => {
 
   return (
     <Pagination
-      sx={{ display:'flex', justifyContent: 'space-around' }}
+      sx={{ width:'100%', display:'flex', justifyContent:'space-around' }}
       count={numberOfPages}
       page={Number(page) || 1}
       variant="outlined"
-      color="primary"
+      color="secondary"
       renderItem={item => (
-        <Link to={`/posts?page=${item.page}`}>
-            <PaginationItem {...item} />
-        </Link>
+            <PaginationItem {...item} component={Link} to={`/posts?page=${item.page}`}/>
       )}
     />
   );

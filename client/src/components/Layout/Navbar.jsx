@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import tours from '../../assets/images/tours.png';
-import { AppBar, Typography, Box, Toolbar, Avatar, Button } from '@mui/material';
+import { AppBar, Typography, Box, Avatar, Button } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import useTheme from '@mui/material/styles/useTheme';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { googleLogout } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
 import { jwtDecode } from 'jwt-decode';
+import toast from 'react-hot-toast'
 import { logOutAuth } from '../../store';
 
 const Navbar = () => {
@@ -15,12 +15,14 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  console.log(user);
 
   const handleLogout = () => {
     googleLogout();
     setUser(null);
     dispatch(logOutAuth());
     navigate('/posts');
+    toast.success("You've been logged out.")
   };
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const Navbar = () => {
         throw new Error('Failed to verify token');
       }
       const data = await response.json();
-      // Check if token is expired
+
       const currentTime = Math.floor(Date.now() / 1000);
       if (currentTime > data.exp) handleLogout();
     } catch (error) {
@@ -57,111 +59,83 @@ const Navbar = () => {
     <AppBar
       position="static"
       color="inherit"
-      // sx={{
-      //   borderRadius: 5,
-      //   marginBottom: '30px',
-      //   display: 'flex',
-      //   flexDirection: 'row',
-      //   justifyContent: 'space-between',
-      //   alignItems: 'center',
-      // }}
       sx={{
-        borderRadius: 5,
-        marginBottom: '30px',
+        borderRadius: 3,
+        marginBottom: '15px',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '5px 20px',
+        padding: '10px 20px',
         [theme.breakpoints.down('sm')]: {
-          flexDirection: 'column',
+          padding: '10px',
         },
       }}
     >
       <Box sx={{ display: 'flex', marginLeft: '10px', alignItems: 'center' }}>
-        <Link to={'/'}>
+        <Link to={'/posts'}>
           <Typography
             to="/"
             variant="h3"
             align="center"
             sx={{
-              color: 'rgba(0,183,255, 1)',
+              color: 'rgba(0,140,255, 1)',
+              fontSize: '2.5em',
+              fontWeight: '600',
+              [theme.breakpoints.down('sm')]: {
+                fontSize: '1.5em',
+              }
             }}
-            // sx={{
-            //   color: theme.palette.primary.main,
-            //   textDecoration: 'none',
-            //   fontSize: '2em',
-            //   fontWeight: 300,
-            // }}
           >
-            Tours
+            #Tours
           </Typography>
         </Link>
-        <img
-          src={tours}
-          alt="tours logo"
-          height="50"
-          sx={{
-            marginLeft: '15px',
-          }}
-        />
       </Box>
-      <Toolbar
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          width: '400px',
-          [theme.breakpoints.down('sm')]: {
-            width: 'auto',
-          },
-        }}
-      >
         {user ? (
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              width: '400px',
               alignItems: 'center',
-              [theme.breakpoints.down('sm')]: {
-                width: 'auto',
-                marginTop: 20,
-                justifyContent: 'center',
-              },
             }}
           >
             <Avatar
               sx={{
                 color: theme.palette.getContrastText(deepPurple[500]),
                 backgroundColor: deepPurple[500],
+                [theme.breakpoints.down('sm')]: {
+                  fontSize: '1em',
+                  height:'30px',
+                  width: '30px'
+                }
               }}
               src={user.result.picture}
               alt={user.result.name}
             >
               {user.result.name.charAt(0)}
             </Avatar>
-            <Typography
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                textAlign: 'center',
-              }}
-              variant="h6"
-            >
-              {user.result.name}
-            </Typography>
-            <Button sx={{ marginLeft: '20px' }} variant="contained" color="secondary" onClick={handleLogout}>
+            <Button sx={{ marginLeft: '20px', [theme.breakpoints.down('sm')]: {
+          fontSize: '0.7em',
+        } }} variant="contained" color="secondary" onClick={handleLogout}>
               Logout
             </Button>
           </Box>
         ) : (
-          <Link to={'/auth'}>
-            <Button variant="contained" color="primary">
+          <Link to={'/auth/'}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                fontSize: '1em',
+                [theme.breakpoints.down('sm')]: {
+                  fontSize: '0.7em',
+                },
+              }}
+            >
               Sign In
             </Button>
           </Link>
         )}
-      </Toolbar>
     </AppBar>
   );
 };

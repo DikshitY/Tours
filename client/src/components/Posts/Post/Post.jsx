@@ -3,6 +3,8 @@ import moment from 'moment';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, Box, ButtonBase } from '@mui/material';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { deletePost, likePost } from '../../../store';
@@ -14,8 +16,13 @@ const Post = ({ post, setCurrentID }) => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('profile'));
   const [likes, setLikes] = useState(post?.likes);
+  const [open, setOpen] = useState(false);
   const userID = user?.result?.sub || user?.result?._id;
   const hasLikedPost = post?.likes.find((like) => like === userID);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleLike = () => {
     dispatch(likePost(post._id));
@@ -91,12 +98,49 @@ const Post = ({ post, setCurrentID }) => {
           <Typography variant="h6">{post.name}</Typography>
           <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
         </Box>
+          <Box
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            sx={{
+              position: 'absolute',
+              display: open ? 'flex' : 'none',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              top: '10px',
+              right: '10px',
+              bgcolor: 'background.paper',
+              borderRadius: '30px',
+              boxShadow: 24,
+              padding: '10px 50px 20px 10px',
+            }}
+          >
+            <Button
+              sx={{ fontWeight: '600', fontSize: '1em' }}
+              onClick={() => {
+                setCurrentID(post._id);
+                handleClose();
+              }}
+            >
+              <EditIcon sx={{ marginRight: '10px' }} /> Edit
+            </Button>
+            <Button
+              sx={{ fontWeight: '600', fontSize: '1em' }}
+              color="error"
+              onClick={() => dispatch(deletePost(post))}
+            >
+              <DeleteIcon sx={{ marginRight: '10px' }} /> Delete
+            </Button>
+            <Button onClick={handleClose} sx={{ fontWeight: '600', fontSize: '1em' }} color="inherit">
+              <CloseIcon sx={{ marginRight: '10px' }} /> Close
+            </Button>
+          </Box>
         {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator) && (
           <Box
             sx={{
               position: 'absolute',
               top: '20px',
-              right: '20px',
+              right: '0px',
               color: 'white',
             }}
           >
@@ -105,7 +149,8 @@ const Post = ({ post, setCurrentID }) => {
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
-                setCurrentID(post._id);
+                // setCurrentID(post._id);
+                setOpen(true);
               }}
             >
               <MoreHorizIcon fontSize="default" />
@@ -148,13 +193,35 @@ const Post = ({ post, setCurrentID }) => {
         <Button size="small" color="primary" disabled={!user?.result} onClick={handleLike}>
           <Likes />
         </Button>
-        {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator) && (
+        {/* {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator) && (
           <Button size="small" color="primary" onClick={() => dispatch(deletePost(post))}>
             <DeleteIcon fontSize="small" />
             Delete
           </Button>
-        )}
+        )} */}
       </CardActions>
+      {/* <Modal
+        open={open}
+        onClose={handleClose}
+      >
+        <Box sx={style}>
+          <Button
+            sx={{ fontWeight: '600', fontSize: '1em' }}
+            onClick={() => {
+              setCurrentID(post._id);
+              handleClose();
+            }}
+          >
+            <EditIcon sx={{ marginRight: '10px' }} /> Edit
+          </Button>
+          <Button sx={{ fontWeight: '600', fontSize: '1em' }} color="error" onClick={() => dispatch(deletePost(post))}>
+            <DeleteIcon sx={{ marginRight: '10px' }} /> Delete
+          </Button>
+          <Button onClick={handleClose} sx={{ fontWeight: '600', fontSize: '1em' }} color="inherit">
+            <CloseIcon sx={{ marginRight: '10px' }} /> Close
+          </Button>
+        </Box>
+      </Modal> */}
     </Card>
   );
 };

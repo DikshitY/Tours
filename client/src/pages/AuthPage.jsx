@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addAuth,signIn, signUp } from '../store';
+import { addAuth, signIn, signUp } from '../store';
 import { useGoogleLogin } from '@react-oauth/google';
 import useTheme from '@mui/material/styles/useTheme';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -29,10 +29,10 @@ const SignInPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isSignup) {
-      dispatch(signUp(formData));
-      navigate('/')
+      dispatch(signUp({formData, navigate}));
+      // navigate('/');
     } else {
-      dispatch(signIn({formData, navigate}));
+      dispatch(signIn({ formData, navigate }));
       // navigate('/')
     }
   };
@@ -47,7 +47,7 @@ const SignInPage = () => {
         const res = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: { Authorization: `Bearer ${codeResponse.access_token}` },
         });
-        const token = codeResponse.access_token
+        const token = codeResponse.access_token;
         const result = res.data;
         dispatch(addAuth({ result, token }));
         navigate('/');
@@ -68,7 +68,8 @@ const SignInPage = () => {
       <Paper
         elevation={3}
         sx={{
-          marginTop: theme.spacing(8),
+          marginTop: theme.spacing(4),
+          marginBottom: theme.spacing(2),
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -77,7 +78,7 @@ const SignInPage = () => {
       >
         <Avatar
           sx={{
-            margin: theme.spacing(1),
+            // margin: theme.spacing(1),
             backgroundColor: theme.palette.secondary.main,
           }}
         >
@@ -109,7 +110,12 @@ const SignInPage = () => {
               handleShowPassword={handleShowPassword}
             />
             {isSignup && (
-              <Input name="confirmPassword" label="Confirm Password" handleChange={handleChange} type="password" />
+              <Input
+                name="confirmPassword"
+                label="Confirm Password"
+                handleChange={handleChange}
+                type={'password'}
+              />
             )}
           </Grid>
           <Button
@@ -123,21 +129,6 @@ const SignInPage = () => {
           >
             {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
-          {/* <Box sx={{ width: '100%', marginBottom: '10px' }}>
-            <GoogleLogin
-              onSuccess={(response) => {
-                const result = jwtDecode(response?.credential);
-                const token = response?.credential;
-                try {
-                  dispatch(addAuth({ result, token }));
-                  navigate('/');
-                } catch (error) {
-                  console.log(error);
-                }
-              }}
-              onError={(error) => console.log(error)}
-            />
-          </Box> */}
           <Button
             sx={{
               marginBottom: theme.spacing(2),
