@@ -9,7 +9,7 @@ import CommentSection from './CommentSection';
 
 const PostDetail = () => {
   const theme = useTheme();
-  const { post, posts, isLoading } = useSelector((state) => state.posts);
+  const { post, posts, isLoading, isCommentLoading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -50,12 +50,12 @@ const PostDetail = () => {
   };
 
   return (
-    <Paper elevation={6} sx={{ padding: '20px', borderRadius: '15px' }}>
+    <Paper elevation={6} sx={{ padding: '20px', borderRadius: '15px', marginBottom:'10px' }}>
       <Box
         sx={{
           display: 'flex',
           width: '100%',
-          [theme.breakpoints.down('sm')]: {
+          [theme.breakpoints.down('md')]: {
             flexWrap: 'wrap',
             flexDirection: 'column',
           },
@@ -69,27 +69,23 @@ const PostDetail = () => {
           }}
         >
           <Typography variant="h3" component="h2">
-            {post.title}
+            {post.title.substring(0, 1).toUpperCase() + post.title.substring(1)}
           </Typography>
           <Typography gutterBottom variant="h6" color="textSecondary" component="h2">
             {post.tags.map((tag) => `#${tag} `)}
+            {/* {post.tags[0].split(',').map((tag) => `#${tag} `)} */}
           </Typography>
           <Typography gutterBottom variant="body1" component="p">
             {post.message}
           </Typography>
+          <Divider sx={{ margin: '20px 0' }} />
           <Typography variant="h6">Created by: {post.name}</Typography>
           <Typography variant="body1">{moment(post.createdAt).fromNow()}</Typography>
-          <Divider sx={{ margin: '20px 0' }} />
-          <Typography variant="body1">
-            <strong>Realtime Chat - coming soon!</strong>
-          </Typography>
-          <Divider sx={{ margin: '20px 0' }} />
-          <CommentSection post={post}/>
-          <Divider style={{ margin: '20px 0' }} />
         </Box>
         <Box
           sx={{
             marginLeft: '20px',
+            overflow:'hidden',
             [theme.breakpoints.down('sm')]: {
               marginLeft: 0,
             },
@@ -100,7 +96,7 @@ const PostDetail = () => {
               borderRadius: '20px',
               objectFit: 'cover',
               width: '100%',
-              maxHeight: '600px',
+              maxHeight: '400px',
             }}
             src={
               post.selectedFile ||
@@ -109,6 +105,9 @@ const PostDetail = () => {
             alt={post.title}
           />
         </Box>
+      </Box>
+      <Box sx={{width:'100%'}}>
+        <CommentSection post={post} isCommentLoading={isCommentLoading} />
       </Box>
       {recommendedPosts.length > 0 && (
         <Box
@@ -125,19 +124,38 @@ const PostDetail = () => {
           <Box
             sx={{
               display: 'flex',
-              [theme.breakpoints.down('sm')]: {
-                flexDirection: 'column',
-              },
+              overflowX: 'auto',
             }}
           >
             {recommendedPosts.map(({ title, likes, name, _id, selectedFile, message }) => (
-              <div style={{ margin: '20px', cursor: 'pointer' }} key={_id} onClick={() => openPost(_id)}>
-                <Typography gutterBottom variant='h6'>{title}</Typography>
-                <Typography gutterBottom variant='subtitle2'>{name}</Typography>
-                <Typography gutterBottom variant='subtitle2'>{message}</Typography>
-                <Typography gutterBottom variant='subtitle1'>Likes: {likes.length}</Typography>
-                <img src={selectedFile} width='200px'/>
-              </div>
+              <Paper
+                elevation={2}
+                style={{
+                  width:'220px',
+                  margin: '10px',
+                  cursor: 'pointer',
+                  padding: '10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+                key={_id}
+                onClick={() => openPost(_id)}
+              >
+                <Typography gutterBottom variant="subtitle2">
+                  {title.substring(0, 1).toUpperCase() + title.substring(1)}
+                </Typography>
+                <Typography gutterBottom variant="body2">
+                  {name}
+                </Typography>
+                <Typography gutterBottom variant="caption">
+                  {message.substring(0, 50) + '...'}
+                </Typography>
+                <img src={selectedFile} height="200px" style={{objectFit:'cover', borderRadius: '10px', marginTop:'10px', marginBottom:'10px' }} />
+                <Typography gutterBottom variant="caption">
+                  Likes: {likes.length}
+                </Typography>
+              </Paper>
             ))}
           </Box>
         </Box>

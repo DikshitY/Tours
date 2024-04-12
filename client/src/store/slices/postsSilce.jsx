@@ -15,6 +15,8 @@ const postsSlice = createSlice({
   initialState: {
     posts: [],
     isLoading: false,
+    isCommentLoading:false,
+    isPostLoading:false,
   },
   reducers: {},
   extraReducers(builder) {
@@ -23,7 +25,6 @@ const postsSlice = createSlice({
     });
 
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      // console.log(action.payload.data);
       return {
         ...state,
         posts: action.payload.data,
@@ -50,16 +51,24 @@ const postsSlice = createSlice({
     });
 
     builder.addCase(addPost.pending, (state, action) => {
-      state.isLoading = true;
+      state.isPostLoading = true;
     });
 
     builder.addCase(addPost.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.isPostLoading = false;
       state.posts.unshift(action.payload);
     });
 
+    builder.addCase(updatePost.pending, (state, action) => {
+      state.isPostLoading = true;
+    });
+
     builder.addCase(updatePost.fulfilled, (state, action) => {
-      return { ...state, posts: state.posts.map((post) => (post._id === action.payload._id ? action.payload : post)) };
+      return {
+        ...state,
+        isPostLoading: false,
+        posts: state.posts.map((post) => (post._id === action.payload._id ? action.payload : post)),
+      };
     });
 
     builder.addCase(deletePost.fulfilled, (state, action) => {
@@ -70,9 +79,14 @@ const postsSlice = createSlice({
       return { ...state, posts: state.posts.map((post) => (post._id === action.payload._id ? action.payload : post)) };
     });
 
+    builder.addCase(commentPost.pending, (state, action) => {
+      state.isCommentLoading = true;
+    });
+
     builder.addCase(commentPost.fulfilled, (state, action) => {
       return {
         ...state,
+        isCommentLoading: false,
         posts: state.posts.map((post) => {
           if (post._id === action.payload._id) {
             return action.payload;

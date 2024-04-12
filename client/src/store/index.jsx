@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { postsReducer } from './slices/postsSilce';
-import { authReducer, addAuth, logOutAuth} from './slices/authSlice';
+import { authReducer, addAuth, logOutAuth, setAuth} from './slices/authSlice';
 
 const store = configureStore({
   reducer: {
@@ -9,7 +9,7 @@ const store = configureStore({
   },
 });
 
-export { store, addAuth, logOutAuth };
+export { store, addAuth, logOutAuth, setAuth };
 export * from './api/fetchPost'
 export * from './api/fetchPosts';
 export * from './api/fetchPostsBySearch'

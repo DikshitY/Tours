@@ -13,10 +13,6 @@ const auth = async (req, res, next) => {
       req.userId = decodedData.id;
       req.token = token;
     } else {
-      // decodedData = jwt.verify(token, process.env.GOOGLE_AUTH_CLIENT_ID);
-      // console.log(decodedData.payload);
-      // req.userId = decodedData.sub;
-      // req.token = token;
       try {
         const googleResponse = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`);
         console.log(googleResponse.data);
@@ -40,7 +36,7 @@ const auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Please authenticate.' });
+    res.status(401).json({ message: 'Please authenticate.', error });
   }
 };
 

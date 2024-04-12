@@ -4,13 +4,15 @@ import toast from 'react-hot-toast'
 
 const addPost = createAsyncThunk('post/add', async ({formData, navigate}) => {
   try {
+    console.log(formData);
     const {data} = await Axios.post('/api/v1/posts', formData);
 
     navigate(`/posts/${data._id}`)
     toast.success('Post created successfully.')
     return data;
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+    // console.log(error.message);
   }
 });
 
