@@ -9,10 +9,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { deletePost, likePost } from '../../../store';
 import { useDispatch, useSelector } from 'react-redux';
-import {Link } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
 
 const Post = ({ post, setCurrentID }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const user = useSelector(state => state?.auth?.authData)
   const [likes, setLikes] = useState(post?.likes);
   const [open, setOpen] = useState(false);
@@ -113,7 +114,10 @@ const Post = ({ post, setCurrentID }) => {
           >
             <EditIcon sx={{ marginRight: '10px' }} /> Edit
           </Button>
-          <Button sx={{ fontWeight: '600', fontSize: '1em' }} color="error" onClick={() => dispatch(deletePost(post))}>
+          <Button sx={{ fontWeight: '600', fontSize: '1em' }} color="error" onClick={() => {
+            dispatch(deletePost(post))
+            navigate('/')
+            }}>
             <DeleteIcon sx={{ marginRight: '10px' }} /> Delete
           </Button>
           <Button onClick={handleClose} sx={{ fontWeight: '600', fontSize: '1em' }} color="inherit">

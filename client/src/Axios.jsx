@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const Axios = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://tours-fk0i.onrender.com',
 });
 
 Axios.interceptors.request.use((req) => {

@@ -11,6 +11,7 @@ const Form = ({ currentID, setCurrentID }) => {
   const dispatch = useDispatch();
   const post = useSelector((state) => (currentID ? state.posts.posts.find((p) => p._id === currentID) : null));
   const user = useSelector(state => state?.auth?.authData);
+  const userID = user?.result?.sub || user?.result?._id;
   const {isPostLoading} = useSelector(state => state.posts)
 
   const [postData, setPostData] = useState({
@@ -34,15 +35,13 @@ const Form = ({ currentID, setCurrentID }) => {
 
     const formData = new FormData();
     formData.append('name', user?.result?.name);
-    formData.append('creator', user?.result?._id)
+    formData.append('creator', userID)
     formData.append('title', postData.title);
     formData.append('message', postData.message);
     postData.tags.forEach((tag) => {
       formData.append('tags', tag);
     });
     formData.append('selectedFile', postData.selectedFile);
-
-    console.log(formData);
 
     if (currentID) {
       dispatch(updatePost({ currentID, formData }));

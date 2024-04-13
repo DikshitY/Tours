@@ -15,13 +15,12 @@ const auth = async (req, res, next) => {
     } else {
       try {
         const googleResponse = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`);
-        console.log(googleResponse.data);
         // Validate the response from Google
         if (googleResponse.data.aud === process.env.GOOGLE_AUTH_CLIENT_ID) {
           // Token is valid
           req.userId = googleResponse.data.sub;
           req.token = token;
-        } else {
+        } else {  
           // Invalid token
           console.error('Invalid Google access token');
           res.status(401).json({ message: 'Please authenticate.' });
